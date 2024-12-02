@@ -44,7 +44,6 @@ public class SecurityConfig {
                 .loginProcessingUrl("/loginProc").permitAll()
             );
 
-
       
 
         http
