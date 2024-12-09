@@ -66,7 +66,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
-    return source;
+        return source;
     }
 
     
@@ -94,13 +94,37 @@ public class SecurityConfig {
 
     @Bean 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.cors(httpSecurityCorsConfigurer -> {
-            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
-          });
+        /***********************************************
+         cors 설정에 필요한 configurationSource 객체 생성
+         - CorsConfiguration 이 들어있는 
+           UrlBasedCorsConfigurationSource 객체를 반환!!
+        ************************************************/
+        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                .configurationSource(corsConfigurationSource())
+          );
 
-        http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        /**********************************************************
+         session 관리를 하지 않겠다 STATELESS 상태를 유지하겠다는 설정
+        ***********************************************************/
+        http.sessionManagement(sessionConfig -> sessionConfig
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+
+        /***********************************************************
+         csrf 토큰을 통한 csrf 공격 대비에 대한 설정을 비활성화 하겠다!!
+        ************************************************************/
         http.csrf(config -> config.disable());
         
+
+
+        /***************************************************
+          1. 각 url 패턴에 대한 접근 권한 설정
+          2. {url패턴}/** --> "url패턴에 대한 하위 url 전부" 
+          3. String Array로 그룹화하여 관리할 것
+        ****************************************************/
         http
         
             .authorizeHttpRequests((auth)-> auth
@@ -108,7 +132,9 @@ public class SecurityConfig {
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/mypage/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
-                );
+            );
+
+
 
 
         /*****************************************************************************
@@ -117,7 +143,9 @@ public class SecurityConfig {
              따라서 명시적으로 등록할 필요X
 
           2. 기본적으로 UsernamePasswordAuthenticationFilter는 로그인 요청 URL이 
-             /login이라고 가정, POST 요청으로 아이디(username)와 비밀번호(password)
+             /login이라고 가정
+             , .loginProcessingUrl("/api/user/login")를 통해 특정 url패턴 등록 가능
+             , POST 요청으로 아이디(username)와 비밀번호(password)
         *******************************************************************************/
         http
 
@@ -134,11 +162,19 @@ public class SecurityConfig {
                  login 요청 url (POST 방식으로 호출해야함)
                 ***************************************************/
                 .loginProcessingUrl("/api/user/login")
+
+                /***********************************************
+                  >> 인증이 성공? 했을 경우에 대한 핸들러
+                 ***********************************************/
+                .successHandler(null)
+                
+                
+                /***********************************************
+                  >> 인증이 실패? 했을 경우에 대한 핸들러
+                 ***********************************************/
+                .failureHandler(null)
             );
 
-        http
-
-            .csrf( (auth) -> auth.disable() );
 
         return http.build();
 
