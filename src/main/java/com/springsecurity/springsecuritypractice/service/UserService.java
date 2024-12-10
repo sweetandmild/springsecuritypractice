@@ -31,7 +31,7 @@ public class UserService {
         System.out.println(dto.getUsername());
 
         Userinfo userinfo = Userinfo.builder()
-        .username(dto.getUsername())
+        .email(dto.getUsername())
         .password(bCryptPasswordEncoder.encode(dto.getPassword()))
         .role("ROLE_USER")
         .build();

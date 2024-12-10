@@ -10,24 +10,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-
+@NoArgsConstructor
 
 @Entity
-@SequenceGenerator(name = "userinfo_SEQ", allocationSize = 1)
-public class Userinfo {
+@SequenceGenerator(name = "userinfo_role_seq", allocationSize = 1)
+public class UserinfoRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userinfo_SEQ")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userinfo_role_seq")
+    private Long userinfoRollId;
 
-    private String email;
-
-    private String password; 
-
-    private String role;
+    private String rollName;
 }
