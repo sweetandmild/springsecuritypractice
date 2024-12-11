@@ -16,7 +16,10 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler{
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
+            
+            System.out.println(">>>>>>>>>>>>> authentication is :" + authentication);
 
+            System.out.println("success login!!!!!!!!!!!!");
 
 
     }

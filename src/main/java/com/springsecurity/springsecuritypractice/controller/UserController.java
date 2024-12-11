@@ -25,11 +25,11 @@ public class UserController {
         return "login"; 
     }
 
-    @PostMapping("/loginProc")
-    public String loginProcess(){
+    // @PostMapping("/loginProc")
+    // public String loginProcess(){
 
-        return "dedirect:";
-    }
+    //     return "redirect:";
+    // }
 
     @GetMapping("/join")
     public String joinP(){
@@ -43,6 +43,12 @@ public class UserController {
         userService.join(dto);
         
 
-        return "redirect:join";
+        return "redirect:login";
+    }
+
+    @PostMapping("/api/user/login")
+    public String login(){
+
+        return "redirect:main";
     }
 }

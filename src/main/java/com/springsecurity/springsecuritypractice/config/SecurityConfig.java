@@ -13,6 +13,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.springsecurity.springsecuritypractice.security.handler.APILoginFailHandler;
+import com.springsecurity.springsecuritypractice.security.handler.APILoginSuccessHandler;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -155,7 +158,7 @@ public class SecurityConfig {
                  시도할 경우 리다이렉션시킬 URL
                  (웹 사이트에서 제공하는 로그인 페이지 URL)
                 ***************************************************/
-                .loginPage("/user/login")
+                .loginPage("/login")
 
                 /***************************************************
                  UsernamePasswordAuthenticationFilter가 작동되기 위한
@@ -166,13 +169,13 @@ public class SecurityConfig {
                 /***********************************************
                   >> 인증이 성공? 했을 경우에 대한 핸들러
                  ***********************************************/
-                .successHandler(null)
+                .successHandler(new APILoginSuccessHandler())
                 
                 
                 /***********************************************
                   >> 인증이 실패? 했을 경우에 대한 핸들러
                  ***********************************************/
-                .failureHandler(null)
+                .failureHandler(new APILoginFailHandler())
             );
 
 

@@ -1,11 +1,15 @@
 package com.springsecurity.springsecuritypractice.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springsecurity.springsecuritypractice.dto.JoinDto;
+import com.springsecurity.springsecuritypractice.entity.UserRole;
 import com.springsecurity.springsecuritypractice.entity.Userinfo;
 import com.springsecurity.springsecuritypractice.repository.UserRepository;
 
@@ -31,13 +35,22 @@ public class UserService {
         System.out.println(dto.getUsername());
 
         Userinfo userinfo = Userinfo.builder()
-        .email(dto.getUsername())
-        .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-        .role("ROLE_USER")
+        .userinfoEmail(dto.getUsername())
+        .userinfoPassword(bCryptPasswordEncoder.encode(dto.getPassword()))
         .build();
 
-        
+        userinfo.setUserRoles(createDefaultUserRoleList(userinfo));
 
         userRepository.save(userinfo);
+    }
+
+    private List<UserRole> createDefaultUserRoleList(Userinfo userinfo){
+        List<UserRole> userRoles = new ArrayList<>();
+        userRoles.add(UserRole.builder()
+                              .userRoleName("ROLE_USER")
+                              .userinfo(userinfo)
+                              .build());
+
+        return userRoles;
     }
 }
