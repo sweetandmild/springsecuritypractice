@@ -2,6 +2,8 @@ package com.springsecurity.springsecuritypractice.security.userDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,6 +66,20 @@ public class PrincipalDetails implements UserDetails{
     @Override
     public String getPassword() {
         return formLoginDto.getPassword();
+    }
+
+    /**********************************************
+       
+     **********************************************/
+    public Map<String, Object> getClaims() {
+      
+      Map<String, Object> claims = new HashMap<>();
+
+      claims.put("email", formLoginDto.getEmail());
+      claims.put("roleNames", formLoginDto.getRoleNames());
+      claims.put("social", formLoginDto.isSocial());
+
+      return claims;
     }
 
 }

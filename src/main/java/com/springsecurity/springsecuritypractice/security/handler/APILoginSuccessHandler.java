@@ -1,9 +1,15 @@
 package com.springsecurity.springsecuritypractice.security.handler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import com.nimbusds.jose.shaded.gson.Gson;
+import com.springsecurity.springsecuritypractice.security.userDetails.PrincipalDetails;
+import com.springsecurity.springsecuritypractice.util.JWTUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +24,27 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler{
             Authentication authentication) throws IOException, ServletException {
             
             System.out.println(">>>>>>>>>>>>> authentication is :" + authentication);
-
             System.out.println("success login!!!!!!!!!!!!");
 
+            PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
+            
 
+
+            String accessToken = JWTUtil.generateToken(principalDetails.getClaims(), 10);
+            String refreshToken = JWTUtil.generateToken(principalDetails.getClaims(), 60*24);
+
+            // JSON 응답 생성
+            Gson gson = new Gson();
+
+            String jsonStr = gson.toJson(Map.of(
+              "accessToken", accessToken,
+              "refreshToken", refreshToken
+            ));
+
+            response.setContentType("application/json; charset=UTF-8");
+            PrintWriter printWriter = response.getWriter();
+            printWriter.println(jsonStr);
+            printWriter.close();
     }
 
 }
