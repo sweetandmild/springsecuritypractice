@@ -1,7 +1,6 @@
 package com.springsecurity.springsecuritypractice.security.filter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.nimbusds.jose.shaded.gson.Gson;
-import com.springsecurity.springsecuritypractice.security.userDetails.FormLoginDto;
-import com.springsecurity.springsecuritypractice.security.userDetails.PrincipalDetails;
+import com.springsecurity.springsecuritypractice.security.principal.AuthenticationDto;
+import com.springsecurity.springsecuritypractice.security.principal.OAuth2UserDetails;
 import com.springsecurity.springsecuritypractice.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
@@ -82,7 +81,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         // 3. 클레임 데이터를 기반으로 FormLoginDto 객체 생성
         // - JWT 클레임에서 사용자 정보를 추출하여 DTO로 변환
-        FormLoginDto formLoginDto = FormLoginDto.builder()
+        AuthenticationDto authenticationDto = AuthenticationDto.builder()
                 .email((String) claims.get("email"))           // 이메일 정보
                 .password((String) claims.get("password"))     // 비밀번호 정보 (보안상 부적절, 제거 권장)
                 .roleNames((List<String>) claims.get("roleNames")) // 권한 정보
@@ -91,21 +90,21 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         // 4. 사용자 세부 정보 객체 생성
         // - FormLoginDto를 사용하여 PrincipalDetails 객체를 생성
-        PrincipalDetails principalDetails = PrincipalDetails.builder()
-                .formLoginDto(formLoginDto)
-                .build();
+        OAuth2UserDetails oAuth2UserDetails = OAuth2UserDetails.builder()
+                                                               .authenticationDto(authenticationDto)
+                                                               .build();
 
         log.info("-----------------------------------");
-        log.info(principalDetails);  // 디버깅용 PrincipalDetails 출력
-        log.info(principalDetails.getAuthorities()); // 사용자의 권한 출력
+        log.info(oAuth2UserDetails);  // 디버깅용 PrincipalDetails 출력
+        log.info(oAuth2UserDetails.getAuthorities()); // 사용자의 권한 출력
 
         // 5. 인증 객체 생성
         // - Spring Security에서 사용하는 UsernamePasswordAuthenticationToken을 생성
         UsernamePasswordAuthenticationToken authenticationToken = 
                 new UsernamePasswordAuthenticationToken(
-                        principalDetails,                             // Principal (사용자 정보)
-                        principalDetails.getFormLoginDto().getPassword(), // Credentials (비밀번호)
-                        principalDetails.getAuthorities()              // Authorities (권한 정보)
+                  oAuth2UserDetails,                             // Principal (사용자 정보)
+                  oAuth2UserDetails.getAuthenticationDto().getPassword(), // Credentials (비밀번호)
+                  oAuth2UserDetails.getAuthorities()              // Authorities (권한 정보)
                 );
 
         // 6. SecurityContext에 인증 객체 저장

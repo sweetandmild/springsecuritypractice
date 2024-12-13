@@ -13,26 +13,19 @@ import org.springframework.stereotype.Service;
 import com.springsecurity.springsecuritypractice.entity.UserRole;
 import com.springsecurity.springsecuritypractice.entity.Userinfo;
 import com.springsecurity.springsecuritypractice.repository.UserinfoRepository;
-import com.springsecurity.springsecuritypractice.security.userDetails.FormLoginDto;
-import com.springsecurity.springsecuritypractice.security.userDetails.PrincipalDetails;
+import com.springsecurity.springsecuritypractice.security.principal.AuthenticationDto;
+import com.springsecurity.springsecuritypractice.security.principal.OAuth2UserDetails;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class PrincipalDetailsService implements UserDetailsService{
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    
     private UserinfoRepository userinfoReposity; 
 
     @Autowired
-    PrincipalDetailsService(BCryptPasswordEncoder bCryptPasswordEncoder
-                            , UserinfoRepository userinfoReposity){
-
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    PrincipalDetailsService(UserinfoRepository userinfoReposity){
         this.userinfoReposity = userinfoReposity;
-
     }
 
     @Override
@@ -43,20 +36,20 @@ public class PrincipalDetailsService implements UserDetailsService{
 
         
 
-        FormLoginDto formLoginDto = FormLoginDto.builder()
+        AuthenticationDto authenticationDto = AuthenticationDto.builder()
                                                 .email(userinfo.getUserinfoEmail())
                                                 .password(userinfo.getUserinfoPassword())
                                                 .build();
 
         for(UserRole userRole : userinfo.getUserRoles()){
-            formLoginDto.getRoleNames().add(userRole.getUserRoleName());
+            authenticationDto.getRoleNames().add(userRole.getUserRoleName());
         }
 
-        PrincipalDetails principalDetails = PrincipalDetails.builder()
-                                                            .formLoginDto(formLoginDto)
-                                                            .build();
+        OAuth2UserDetails oAuth2UserDetails = OAuth2UserDetails.builder()
+                                              .authenticationDto(authenticationDto)
+                                              .build();
 
-        return principalDetails;
+        return oAuth2UserDetails;
     }
 
 }
