@@ -5,7 +5,7 @@ spring:
         registration:  # OAuth2 클라이언트 등록 정보
           google:
             client-id: 667368354987-v8mk4av6ndmqqj6f3uembit4e94ke6b4.apps.googleusercontent.com  # Google OAuth 클라이언트 ID
-            
+            client-secret: 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  # Google OAuth 클라이언트 Secret
             scope:  # OAuth2 요청 시 동의 항목
               - email  # 사용자 이메일 정보
           kakao:
