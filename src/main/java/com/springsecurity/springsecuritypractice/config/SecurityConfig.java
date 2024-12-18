@@ -125,6 +125,7 @@ public class SecurityConfig {
           2. {url패턴}/** --> "url패턴에 대한 하위 url 전부" 
           3. String Array로 그룹화하여 관리할 것
         ****************************************************/
+        
         http
         
             .authorizeHttpRequests((auth)-> auth
