@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.springsecurity.springsecuritypractice.entity.UserRole;
 import com.springsecurity.springsecuritypractice.entity.Userinfo;
+import com.springsecurity.springsecuritypractice.entity.Userprofile;
 import com.springsecurity.springsecuritypractice.repository.UserinfoRepository;
 import com.springsecurity.springsecuritypractice.security.principal.AuthenticationDto;
 import com.springsecurity.springsecuritypractice.security.principal.OAuth2UserDetails;
@@ -57,7 +58,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService{
             Userinfo userinfo = Userinfo.builder()
                                         .userinfoEmail(email)
                                         .userinfoPassword(defaultPassword)
-                                     // .userprofile(Userprofile.builder().userprofileNickname(defaultNickname).build())  
+                                        .userprofile(Userprofile.builder().userprofileNickname(defaultNickname).build())  
                                         .build();
 
             List<UserRole> userRoles = new ArrayList<>();
@@ -68,17 +69,19 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService{
             userinfo.setUserRoles(userRoles);
             userinfoRepository.save(userinfo);
 
+            authenticationDto.setId(userinfo.getUserinfoId());
             authenticationDto.setPassword(defaultPassword);
             authenticationDto.getRoleNames().add("ROLE_USER");
+            
             return new OAuth2UserDetails(authenticationDto); 
         }
         
+        authenticationDto.setId(findUserinfo.getUserinfoId());
         authenticationDto.setPassword(findUserinfo.getUserinfoPassword());
 
         for(UserRole userRole : findUserinfo.getUserRoles()){
             authenticationDto.getRoleNames().add(userRole.getUserRoleName());
         }
-
 
         return new OAuth2UserDetails(authenticationDto);
     }

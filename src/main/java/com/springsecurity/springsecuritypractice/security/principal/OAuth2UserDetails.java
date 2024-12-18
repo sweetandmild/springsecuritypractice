@@ -67,11 +67,12 @@ public class OAuth2UserDetails implements UserDetails, OAuth2User{
       
       Map<String, Object> claims = new HashMap<>();
 
+      claims.put("id", authenticationDto.getId());
       claims.put("email", authenticationDto.getEmail());
       claims.put("roleNames", authenticationDto.getRoleNames());
       claims.put("social", authenticationDto.isSocial());
       claims.put("provider", authenticationDto.getProvider());
-      claims.put("attribute", authenticationDto.getAttributes());
+      claims.put("attributes", authenticationDto.getAttributes());
 
       return claims;
     }

@@ -37,6 +37,7 @@ public class PrincipalDetailsService implements UserDetailsService{
         
 
         AuthenticationDto authenticationDto = AuthenticationDto.builder()
+                                                .id(userinfo.getUserinfoId())
                                                 .email(userinfo.getUserinfoEmail())
                                                 .password(userinfo.getUserinfoPassword())
                                                 .build();

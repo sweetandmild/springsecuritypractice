@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,15 @@ public class Userinfo {
 
     private String userinfoPassword; 
 
+    @OneToOne(mappedBy = "userinfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private Userprofile userprofile;
+
     @Builder.Default
+
+
+
+
+    
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userinfo")
     private List<UserRole> userRoles = new ArrayList<>();
 }

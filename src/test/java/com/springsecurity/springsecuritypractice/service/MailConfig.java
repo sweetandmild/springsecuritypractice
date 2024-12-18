@@ -1,4 +1,4 @@
-package com.springsecurity.springsecuritypractice.config;
+package com.springsecurity.springsecuritypractice.service;
 
 import java.util.Properties;
 
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-@Configuration
+// @Configuration
 public class MailConfig {
 
     @Bean
@@ -15,13 +15,17 @@ public class MailConfig {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         // Gmail SMTP 서버 주소
-        mailSender.setHost("smtp.gmail.com");
+        // mailSender.setHost("smtp.gmail.com");
 
-        // Gmail 사용자 계정 (아이디@지메일.com)
-        mailSender.setUsername("taesoo502@gmail.com");
+        // // Gmail 사용자 계정 (아이디@지메일.com)
+        // mailSender.setUsername("taesoo502@gmail.com");
 
-        // 앱 비밀번호(App Password) 또는 실제 패스워드 (보안을 위해 환경변수 등 외부에 저장 권장)
-        mailSender.setPassword("xotnwjd50215**");
+        // // 앱 비밀번호(App Password) 또는 실제 패스워드 (보안을 위해 환경변수 등 외부에 저장 권장)
+        // mailSender.setPassword("xotnwjd50215**");
+
+        mailSender.setHost("smtp.naver.com");
+        mailSender.setUsername("taesoo502@naver.com");  // 네이버 이메일 주소
+        mailSender.setPassword("xotnwjd50215"); 
 
         // Gmail SMTP는 STARTTLS를 활용하는 587 포트 사용 권장
         mailSender.setPort(587);
